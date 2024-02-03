@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+  app:
+    environment:
+      TZ: Europe/London
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8888:80
+    volumes:
+      - ./config:/var/www/config
+      - ./data:/var/www/data:rw
+      - ./public:/var/www/html
+      - ./src:/var/www/src
+      - ./template:/var/www/template
+      - ./vendor:/var/www/vendor
+    container_name: contact-app

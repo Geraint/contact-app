@@ -1,0 +1,46 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+
+{#
+<pre>
+{{ dump(errors) }}
+</pre>
+#}
+
+<form action="/contacts/new" method="post" class="mb-5">
+    <fieldset>
+        <legend>Contact Values</legend>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input name="email" id="email" type="email" class="form-control {{ errors['email'] is defined ? 'is-invalid' }}" placeholder="Email" value="{{ contact.Email ?? '' }}">
+            <span class="invalid-feedback">{{ errors['email'] ?? ''}}</span>
+        </div>
+
+        <div class="mb-3">
+            <label for="first-name" class="form-label">First Name</label>
+            <input name="first-name" id="first-name" type="text" class="form-control {{ errors['first'] is defined ? 'is-invalid' }}" placeholder="First Name" value="{{ contact.First ?? '' }}">
+            <span class="invalid-feedback">{{ errors['first'] ?? ''}}</span>
+        </div>
+
+        <div class="mb-3">
+            <label for="last-name" class="form-label">Last Name</label>
+            <input name="last-name" id="last-name" type="text" class="form-control {{ errors['last'] is defined ? 'is-invalid' }}" placeholder="Last Name" value="{{ contact.Last ?? '' }}">
+            <span class="invalid-feedback">{{ errors['last'] ?? ''}}</span>
+        </div>
+
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone</label>
+            <input name="phone" id="phone" type="text" class="form-control {{ errors['phone'] is defined ? 'is-invalid' }}" placeholder="Phone" value="{{ contact.Phone ?? '' }}">
+            <span class="invalid-feedback">{{ errors['phone'] ?? ''}}</span>
+        </div>
+
+        <button class="btn btn-primary">Save</button>
+    </fieldset>
+</form>
+
+<p>
+    <a href="/contacts" class="btn btn-secondary">Back</a>
+</p>
+{% endblock %}
