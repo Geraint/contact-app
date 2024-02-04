@@ -98,7 +98,6 @@ class ContactController
         $contact->setEmail($form['email']);
         $contact->setPhone($form['phone']);
 
-        // TODO: Validation
         try {
             $violations = $this->validator->validate($contact);
             $errors = [];
@@ -134,5 +133,124 @@ class ContactController
             );
             return $response;
         }
+    }
+
+    /**
+     * @throws RuntimeException
+     * @throws Twig\Error\Error
+     */
+    public function view(
+        Request $request,
+        ResponseInterface $response,
+        int $id
+    ): ResponseInterface {
+        $contact = $this->getRepository()->find($id);
+        $response->getBody()->write(
+            $this->twig->render(
+                'contact\show.html.twig',
+                [
+                    'contact'  => $contact,
+                ]
+            )
+        );
+        return $response;
+    }
+
+    /**
+     * @throws RuntimeException
+     * @throws Twig\Error\Error
+     */
+    public function editGet(
+        Request $request,
+        ResponseInterface $response,
+        int $id
+    ): ResponseInterface {
+        $contact = $this->getRepository()->find($id);
+        $response->getBody()->write(
+            $this->twig->render(
+                'contact\edit.html.twig',
+                [
+                    'contact'  => $contact,
+                ]
+            )
+        );
+        return $response;
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws Twig\Error\Error
+     */
+    public function editPost(
+        Request $request,
+        ResponseInterface $response,
+        int $id
+    ): ResponseInterface {
+        $form = (array) $request->getParsedBody();
+        $contact = $this->getRepository()->find($id);
+        assert($contact instanceof Domain\Contact);
+        $contact->setFirst($form['first-name']);
+        $contact->setLast($form['last-name']);
+        $contact->setEmail($form['email']);
+        $contact->setPhone($form['phone']);
+        try {
+            $violations = $this->validator->validate($contact);
+            $errors = [];
+            if (count($violations) > 0) {
+                foreach ($violations as $violation) {
+                    $errors[$violation->getPropertyPath()] = $violation->getMessage();
+                }
+                throw new UnexpectedValueException('The form has failed validation');
+            }
+
+            $this->entityManager->persist($contact);
+            $this->entityManager->flush();
+            $this->flash->addMessage('info', 'Updated contact!');
+            return $response
+                ->withHeader('Location', '/contacts')
+                ->withStatus(302);
+        } catch (
+            ORM\Exception\ORMException |
+            ORM\ORMInvalidArgumentException |
+            DBAL\Exception\UniqueConstraintViolationException |
+            UnexpectedValueException $e
+        ) {
+            $this->flash->addMessageNow('danger', $e->getMessage());
+            $response->getBody()->write(
+                $this->twig->render(
+                    'contact\edit.html.twig',
+                    [
+                        'contact'  => $contact,
+                        'errors'   => $errors,
+                        'messages' => $this->flash->getMessages(),
+                    ]
+                )
+            );
+            return $response;
+        }
+    }
+
+    /**
+     * @throws DBAL\Exception\UniqueConstraintViolationException
+     * @throws InvalidArgumentException
+     * @throws ORM\Exception\ORMException
+     * @throws ORM\ORMInvalidArgumentException
+     * @throws RuntimeException
+     * @throws Twig\Error\Error
+     */
+    public function delete(
+        Request $request,
+        ResponseInterface $response,
+        int $id
+    ): ResponseInterface {
+        $contact = $this->getRepository()->find($id);
+        assert($contact instanceof Domain\Contact);
+        $this->entityManager->remove($contact); // FIXME this can fail!
+        $this->entityManager->flush();
+        $this->flash->addMessage('info', 'Deleted contact!');
+        return $response
+            ->withHeader('Location', '/contacts')
+            ->withStatus(302);
     }
 }

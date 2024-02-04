@@ -10,11 +10,16 @@ $app = DI\Bridge\Slim\Bridge::create($container);
 
 $app->redirect('/', '/contacts');
 
-$app->get('/contacts', [App\Controller\ContactController::class, 'index']);
+// $app->get('/contacts', [App\Controller\ContactController::class, 'index']);
 
 $app->group('/contacts', function (RouteCollectorProxy $group) {
+    $group->get('', [App\Controller\ContactController::class, 'index']);
     $group->get('/new', [App\Controller\ContactController::class, 'newGet']);
     $group->post('/new', [App\Controller\ContactController::class, 'new']);
+    $group->get('/{id:[0-9]+}', [App\Controller\ContactController::class, 'view']);
+    $group->get('/{id:[0-9]+}/edit', [App\Controller\ContactController::class, 'editGet']);
+    $group->post('/{id:[0-9]+}/edit', [App\Controller\ContactController::class, 'editPost']);
+    $group->post('/{id:[0-9]+}/delete', [App\Controller\ContactController::class, 'delete']);
 });
 
 $app->add(new App\Middleware\Flash($container->get('flash')));
