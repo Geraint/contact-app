@@ -11,7 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 #[ORM\Table(name: 'contacts')]
-#[ORM\HasLifecycleCallbacks]
 class Contact
 {
     #[ORM\Id]
@@ -79,16 +78,5 @@ class Contact
     public function setEmail(string $email): void
     {
         $this->email = $email;
-    }
-
-    /**
-     * @throws UnexpectedValueException
-     */
-    #[ORM\PrePersist, ORM\PreUpdate]
-    public function validate(): void
-    {
-        if ($this->first === 'Geraint') {
-            throw new UnexpectedValueException('There can be only one Geraint');
-        }
     }
 }

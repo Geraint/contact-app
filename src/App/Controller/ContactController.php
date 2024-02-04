@@ -33,7 +33,7 @@ class ContactController
      * @throws Twig\Error\Error
      * @throws RuntimeException
      */
-    public function index(
+    public function list(
         Request $request,
         ResponseInterface $response,
     ): ResponseInterface {
@@ -65,7 +65,7 @@ class ContactController
      * @throws RuntimeException
      * @throws Twig\Error\Error
      */
-    public function newGet(
+    public function new(
         Request $request,
         ResponseInterface $response,
     ): ResponseInterface {
@@ -86,7 +86,7 @@ class ContactController
      * @throws RuntimeException
      * @throws Twig\Error\Error
      */
-    public function new(
+    public function create(
         Request $request,
         ResponseInterface $response,
     ): ResponseInterface {
@@ -139,7 +139,7 @@ class ContactController
      * @throws RuntimeException
      * @throws Twig\Error\Error
      */
-    public function view(
+    public function show(
         Request $request,
         ResponseInterface $response,
         int $id
@@ -160,7 +160,7 @@ class ContactController
      * @throws RuntimeException
      * @throws Twig\Error\Error
      */
-    public function editGet(
+    public function edit(
         Request $request,
         ResponseInterface $response,
         int $id
@@ -182,7 +182,7 @@ class ContactController
      * @throws RuntimeException
      * @throws Twig\Error\Error
      */
-    public function editPost(
+    public function update(
         Request $request,
         ResponseInterface $response,
         int $id
